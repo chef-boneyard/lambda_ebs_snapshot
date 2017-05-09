@@ -54,12 +54,12 @@ EOF
 
 data "archive_file" "schedule_ebs_snapshot_backups_zip" {
   type        = "zip"
-  source_file = "schedule-ebs-snapshot-backups.py"
-  output_path = "schedule-ebs-snapshot-backups.zip"
+  source_file = "${path.module}/schedule-ebs-snapshot-backups.py"
+  output_path = "${path.module}/schedule-ebs-snapshot-backups.zip"
 }
 
 resource "aws_lambda_function" "schedule_ebs_snapshot_backups" {
-  filename         = "schedule-ebs-snapshot-backups.zip"
+  filename         = "${path.module}/schedule-ebs-snapshot-backups.zip"
   function_name    = "schedule_ebs_snapshot_backups"
   description      = "Automatically backs up instances tagged with backup: true"
   role             = "${aws_iam_role.ebs_backup_role.arn}"
@@ -71,12 +71,12 @@ resource "aws_lambda_function" "schedule_ebs_snapshot_backups" {
 
 data "archive_file" "ebs_snapshot_janitor_zip" {
   type        = "zip"
-  source_file = "ebs-snapshot-janitor.py"
-  output_path = "ebs-snapshot-janitor.zip"
+  source_file = "${path.module}/ebs-snapshot-janitor.py"
+  output_path = "${path.module}/ebs-snapshot-janitor.zip"
 }
 
 resource "aws_lambda_function" "ebs_snapshot_janitor" {
-  filename         = "ebs-snapshot-janitor.zip"
+  filename         = "${path.module}/ebs-snapshot-janitor.zip"
   function_name    = "ebs_snapshot_janitor"
   description      = "Cleans up old EBS backups"
   role             = "${aws_iam_role.ebs_backup_role.arn}"
