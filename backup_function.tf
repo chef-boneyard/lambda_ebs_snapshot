@@ -52,7 +52,7 @@ resource "aws_iam_role_policy" "ebs_backup_policy" {
 EOF
 }
 
-resource "archive_file" "schedule_ebs_snapshot_backups_zip" {
+data "archive_file" "schedule_ebs_snapshot_backups_zip" {
   type        = "zip"
   source_file = "schedule-ebs-snapshot-backups.py"
   output_path = "schedule-ebs-snapshot-backups.zip"
@@ -69,7 +69,7 @@ resource "aws_lambda_function" "schedule_ebs_snapshot_backups" {
   source_code_hash = "${data.archive_file.schedule_ebs_snapshot_backups_zip.output_base64sha256}"
 }
 
-resource "archive_file" "ebs_snapshot_janitor_zip" {
+data "archive_file" "ebs_snapshot_janitor_zip" {
   type        = "zip"
   source_file = "ebs-snapshot-janitor.py"
   output_path = "ebs-snapshot-janitor.zip"
