@@ -12,7 +12,7 @@ Include this repository as a module in your existing terraform code:
 
 ```
 module "lambda_ebs_snapshot" {
-  source "github.com/chef/lambda_ebs_snapshot"
+  source = "github.com/chef/lambda_ebs_snapshot"
   # Setting these variables is optional
   # ebs_snapshot_backups_schedule = "cron(00 19 * * ? *)"
   # ebs_snapshot_janitor_schedule = "cron(05 19 * * ? *)"
