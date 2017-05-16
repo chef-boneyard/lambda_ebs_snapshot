@@ -20,7 +20,7 @@ ec = boto3.client('ec2')
 def lambda_handler(event, context):
     reservations = ec.describe_instances(
         Filters=[
-            {'Name': 'tag-key', 'Values': ['backup', 'Backup']},
+            {'Name': 'tag:Backup', 'Values': ['true', 'yes', '1']},
         ]
     ).get(
         'Reservations', []
