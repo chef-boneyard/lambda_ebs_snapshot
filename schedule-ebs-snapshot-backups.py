@@ -44,6 +44,9 @@ def lambda_handler(event, context):
         except IndexError:
             retention_days = 7
 
+        # See https://github.com/boto/boto3/issues/264#issuecomment-213573980
+        tags = dict(map(lambda x: (x['Key'], x['Value']), instance['Tags'] or []))
+
         for dev in instance['BlockDeviceMappings']:
             if dev.get('Ebs', None) is None:
                 continue
@@ -53,6 +56,7 @@ def lambda_handler(event, context):
 
             snap = ec.create_snapshot(
                 VolumeId=vol_id,
+                Description="%s:%s" % (tags['Name'], dev['DeviceName'])
             )
 
             to_tag[retention_days].append(snap['SnapshotId'])
