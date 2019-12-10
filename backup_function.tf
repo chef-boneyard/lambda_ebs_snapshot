@@ -65,7 +65,7 @@ resource "aws_lambda_function" "schedule_ebs_snapshot_backups" {
   role             = "${aws_iam_role.ebs_backup_role.arn}"
   timeout          = 60
   handler          = "schedule-ebs-snapshot-backups.lambda_handler"
-  runtime          = "python2.7"
+  runtime          = "python3.7"
   source_code_hash = "${data.archive_file.schedule_ebs_snapshot_backups_zip.output_base64sha256}"
 }
 
@@ -82,7 +82,7 @@ resource "aws_lambda_function" "ebs_snapshot_janitor" {
   role             = "${aws_iam_role.ebs_backup_role.arn}"
   timeout          = 60
   handler          = "ebs-snapshot-janitor.lambda_handler"
-  runtime          = "python2.7"
+  runtime          = "python3.7"
   source_code_hash = "${data.archive_file.ebs_snapshot_janitor_zip.output_base64sha256}"
 }
 
