@@ -32,7 +32,7 @@ def lambda_handler(event, context):
             for r in reservations
         ], [])
 
-    print "Found %d instances that need backing up" % len(instances)
+    print("Found %d instances that need backing up" % len(instances))
 
     to_tag = collections.defaultdict(list)
 
@@ -45,14 +45,14 @@ def lambda_handler(event, context):
             retention_days = 7
 
         # See https://github.com/boto/boto3/issues/264#issuecomment-213573980
-        tags = dict(map(lambda x: (x['Key'], x['Value']), instance['Tags'] or []))
+        tags = dict([(x['Key'], x['Value']) for x in instance['Tags'] or []])
 
         for dev in instance['BlockDeviceMappings']:
             if dev.get('Ebs', None) is None:
                 continue
             vol_id = dev['Ebs']['VolumeId']
-            print "Found EBS volume %s on instance %s" % (
-                vol_id, instance['InstanceId'])
+            print("Found EBS volume %s on instance %s" % (
+                vol_id, instance['InstanceId']))
 
             snap = ec.create_snapshot(
                 VolumeId=vol_id,
@@ -61,18 +61,18 @@ def lambda_handler(event, context):
 
             to_tag[retention_days].append(snap['SnapshotId'])
 
-            print "Retaining snapshot %s of volume %s from instance %s for %d days" % (
+            print("Retaining snapshot %s of volume %s from instance %s for %d days" % (
                 snap['SnapshotId'],
                 vol_id,
                 instance['InstanceId'],
                 retention_days,
-            )
+            ))
 
 
-    for retention_days in to_tag.keys():
+    for retention_days in list(to_tag.keys()):
         delete_date = datetime.date.today() + datetime.timedelta(days=retention_days)
         delete_fmt = delete_date.strftime('%Y-%m-%d')
-        print "Will delete %d snapshots on %s" % (len(to_tag[retention_days]), delete_fmt)
+        print("Will delete %d snapshots on %s" % (len(to_tag[retention_days]), delete_fmt))
         ec.create_tags(
             Resources=to_tag[retention_days],
             Tags=[
